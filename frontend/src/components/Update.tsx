@@ -59,7 +59,7 @@ const UpdateForm: React.FC = () => {
         appointment_letter: Yup.mixed(),
     });
 
-    const handleSubmit = async (values: any, { setSubmitting }: any) => {
+    const handleSubmit = async (values: any) => {
         const formData = new FormData();
         Object.entries(values).forEach(([key, value]) => {
             formData.append(key, value);
@@ -74,9 +74,7 @@ const UpdateForm: React.FC = () => {
             navigate(`/profile/${id}`);
         } catch (error) {
             console.error('Error updating user:', error);
-        } finally {
-            setSubmitting(false);
-        }
+        } 
     };
 
     if (!user) {

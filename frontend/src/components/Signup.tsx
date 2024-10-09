@@ -25,21 +25,23 @@ const Signup: React.FC = () => {
             formData.append("home_zip", values.home_zip);
             formData.append("appointment_letter", values.appointment_letter);
             console.log(formData);
-            const response = await axios.post("http://localhost:5000", formData, {
+            var response = await axios.post("http://localhost:5000", formData, {
                 "headers": {
                     "Content-Type": "multipart/form-data"
                 }
             });
+            console.log("response::::::::::", response)
             console.log(response.data);
             alert("Data sent successfully!");
             navigate(`/profile/${response.data.user.id}`);
         } catch (error) {
+            alert("Hello")
             console.error("Error creating post:", error);
         }
     };
 
     const ValidationSchema = Yup.object().shape({
-        firstname: Yup.string().required('First Name is required'),
+        firstname: Yup.string(),
         lastname: Yup.string().required('Last Name is required'),
         email: Yup.string().email('Invalid email').required('Email is required'),
         profile_photo: Yup.mixed().required("Image is required"),

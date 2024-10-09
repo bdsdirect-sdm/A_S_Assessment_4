@@ -18,7 +18,7 @@ app.use('/', userRoutes);
 // Sync database
 sequelize.sync()
   .then(() => {
-    console.log('Database synchronized');
+    console.log('Database synchronized\n\n ');
   })
   .catch((err:any) => {
     console.error('Database synchronization failed:', err);

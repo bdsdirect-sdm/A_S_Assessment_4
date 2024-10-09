@@ -57,7 +57,7 @@ const Profile: React.FC = () => {
         src={`http://localhost:5000/${user.profile_photo}`} 
         alt={`${user.firstname} ${user.lastname}`} 
         className="img-fluid rounded-circle mx-auto d-block mb-4" 
-        style={{ width: '30%' }} 
+        style={{ width: '150px' }} 
       />
 
       <h3 className="text-center">{`${user.firstname} ${user.lastname}`}</h3>

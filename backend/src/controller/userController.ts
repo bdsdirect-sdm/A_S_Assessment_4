@@ -1,5 +1,6 @@
-import { Request, Response } from 'express';
+
 import { User, Address } from '../model/Address';
+import transporter from '../middleware/mailer';
 
 export const addUser = async (req: any, res: any) => {
   try {
@@ -23,6 +24,7 @@ export const addUser = async (req: any, res: any) => {
       email,
       profile_photo: req.files['profile_photo'] ? req.files['profile_photo'][0].path : null,
     });
+
     console.log("Files:::",req.files['appointment_letter'].path)
 
     const address = await Address.create({
@@ -38,6 +40,25 @@ export const addUser = async (req: any, res: any) => {
       userId: user.id, 
     });
 
+    if(user && address){
+      const mailOptions = {
+        from: 'anuragsharda131@gmail.com', // sender address
+        to: email,   // list of receivers
+        subject: 'Hello from Nodemailer', // Subject line
+        text: 'This is a test email sent using Nodemailer!', // plain text body
+        // html: '<b>This is a test email sent using Nodemailer!</b>' // html body (optional)
+    };
+
+      transporter.sendMail(mailOptions, (error, info) => {
+        if (error) {
+            return console.log('Error occurred: ' + error.message);
+        }
+        console.log('Message sent: %s', info.messageId);
+    });
+  
+    }
+
+  
     res.status(201).json({ user, address });
   } catch (error) {
     console.error('Error creating user:', error);
@@ -63,6 +84,19 @@ export const getUser = async (req: any, res: any) => {
 export const updateUser = async (req: any, res: any) => {
   try {
     const { id } = req.params;
+    const {
+      firstname,
+      lastname,
+      email,
+      company_address,
+      company_city,
+      company_state,
+      company_zip,    
+      home_address,
+      home_city,
+      home_state,
+      home_zip
+    } = req.body;
     const user = await User.findByPk(id);
 
     if (!user) {
@@ -70,17 +104,26 @@ export const updateUser = async (req: any, res: any) => {
     }
 
     await user.update({
-      firstname: req.body.firstname,
-      lastname: req.body.lastname,
-      email: req.body.email,
+      firstname,
+      lastname,
+      email,
       profile_photo: req.files['profile_photo'] ? req.files['profile_photo'][0].path : user.profile_photo,
-      appointment_letter: req.files['appointment_letter'] ? req.files['appointment_letter'][0].path : null,
     });
 
     // Update or create address
     const address = await Address.findOne({ where: { userId: id } });
     if (address) {
-      await address.update(req.body);
+      await address.update({
+        company_address,
+        company_city,
+        company_state,
+        company_zip,
+        home_address,
+        home_city,
+        home_state,
+        home_zip,
+        appointment_letter: req.files['appointment_letter'] ? req.files['appointment_letter'][0].path : null
+      });
     } else {
       await Address.create({ ...req.body, userId: user.id });
     }
