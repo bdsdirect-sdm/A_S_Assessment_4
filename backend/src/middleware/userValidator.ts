@@ -22,11 +22,7 @@ const validationSchema = joi.object({
 
 export const Validator = (req:any, res:any, next:NextFunction) => {
 
-    // console.log("Files------------", req.files,"\n\n")
     const value = validationSchema.validate(req.body);
-
-    // console.log("Error:::::", error);
-    // console.log("Value:::::", value);
 
   if(value.error) {
     // Extract custom error messages
